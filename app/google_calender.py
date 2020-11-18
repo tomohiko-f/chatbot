@@ -1,4 +1,5 @@
 from __future__ import print_function
+import calendar
 import datetime
 import pickle
 import os.path
@@ -38,10 +39,14 @@ def main():
     service = build('calendar', 'v3', credentials=creds)
 
     # Call the Calendar API
-    now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    print('Getting the upcoming 10 events')
-    events_result = service.events().list(calendarId=settings.calendar_Id, timeMin=now,
-                                        maxResults=10, singleEvents=True,
+    day_from = datetime.datetime.now().strftime('%Y/%m/%d') + " " + "00:00:00"
+    day_to = datetime.datetime.now().strftime('%Y/%m/%d') + " " + "23:59:59"
+    day_from = datetime.datetime.strptime(day_from, '%Y/%m/%d %H:%M:%S').isoformat() + 'Z' # 'Z' indicates UTC time
+    day_to = datetime.datetime.strptime(day_to, '%Y/%m/%d %H:%M:%S').isoformat() + 'Z'
+    events_result = service.events().list(calendarId=settings.calendar_Id, 
+                                        timeMin=day_from,
+                                        timeMax=day_to,
+                                        singleEvents=True,
                                         orderBy='startTime').execute()
     events = events_result.get('items', [])
 
