@@ -1,4 +1,5 @@
 import os
+import re
 from flask import Flask, request, abort
 
 from linebot import (
@@ -19,9 +20,9 @@ line_bot_api = LineBotApi(settings.channel_access_token)
 handler = WebhookHandler(settings.channel_secret)
 
 
-# @app.route("/")
-# def test():
-#     return "OK"
+@app.route("/")
+def test():
+    return "OK"
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -44,11 +45,12 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    # if event.message.text == "予定":
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text="今日の予定はこれだよ、ほれっ")
-    )
+    if re.search('予定|よてい', event.message.text)\
+        and re.findall('教えて|知りたい|おしえて|しりたい|は？', event.message.text):
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="今日の予定はこれだよ、ほれっ")
+        )
 
 
 if __name__ == "__main__":
