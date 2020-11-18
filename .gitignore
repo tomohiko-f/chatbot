@@ -110,6 +110,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+app/credentials.json
+app/token.pickle
 
 # Spyder project settings
 .spyderproject
