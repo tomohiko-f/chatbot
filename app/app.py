@@ -12,6 +12,7 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
 
+from . import google_calender
 from . import settings
 
 app = Flask(__name__)
@@ -47,9 +48,14 @@ def callback():
 def handle_message(event):
     if re.search('予定|よてい', event.message.text)\
         and re.findall('教えて|知りたい|おしえて|しりたい|は？', event.message.text):
+        calender = google_calender.GoogleCalender()
+        events = calender.get_events()
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(text="今日の予定はこれだよ、ほれっ")
+            TextSendMessage(
+                text="今日の予定はこれだよ、ほらよっ\n"\
+                    + result["start"] + " " + result["summary"]
+            )
         )
 
 
